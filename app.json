@@ -1,9 +1,9 @@
 {
   "expo": {
     "name": "softwarelab assignmet",
-    "slug": "softwarelabassignmet",
+    "slug": "auth-app-assignment",
     "translucent": false,
-    "scheme": "talewallet",
+    "scheme": "authapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,9 +13,12 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "y"
     },
     "android": {
       "googleServicesFile": "./google-services.json",
@@ -23,27 +26,26 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.talewallet"
+      "package": "com.syied.authapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "6a6f1973-21c2-479a-8244-27d28d2697af"
+        "projectId": "23f25664-a198-40e4-aa16-961344c59604"
+      },
+      "router": {
+        "origin": false
       }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.0.0",
     "updates": {
-      "url": "https://u.expo.dev/6a6f1973-21c2-479a-8244-27d28d2697af"
+      "url": "https://u.expo.dev/93519864-9d4e-4040-9280-3cb3d4766641"
     },
     "plugins": [
-      "expo-router",
-      "@react-native-firebase/app",
-      "@react-native-firebase/auth",
-      "@react-native-firebase/crashlytics"
-    ]
+      "expo-router"
+    ],
+    "owner": "syied12"
   }
 }

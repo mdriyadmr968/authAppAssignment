@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1051863200614",
+    "project_id": "auth-app-assignment",
+    "storage_bucket": "auth-app-assignment.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1051863200614:android:3ee5d50462095adbffcea7",
+        "android_client_info": {
+          "package_name": "com.syied.authapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1051863200614-dlb54qff16u7iai0p8obchn6k3u2pp0c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBN8rKCW5CTfV1_uN1fQFw-iY3ucQdUtV8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1051863200614-dlb54qff16u7iai0p8obchn6k3u2pp0c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

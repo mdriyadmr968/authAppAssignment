@@ -7,6 +7,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const appSliceInitialState: AppSliceInitialState = {
   userDetails: {},
+  isLoggedinUsingEmailPass: false,
  
 };
 
@@ -20,6 +21,12 @@ const appSlice = createSlice({
       action: PayloadAction<string>
     ) {
       state.userDetails = action.payload;
+    },
+    updateLoginUsingEmailPass(
+      state: AppSliceInitialState,
+      action: PayloadAction<string>
+    ) {
+      state.isLoggedinUsingEmailPass = action.payload;
     },
    
   },

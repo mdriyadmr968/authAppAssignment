@@ -10,15 +10,46 @@ import {
   ActivityIndicator,
 } from "react-native";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { appActions } from "../store/app-slice";
+import { useOAuth } from "@clerk/clerk-expo";
+import * as Linking from "expo-linking";
+import * as WebBrowser from "expo-web-browser";
+import { useWarmUpBrowser } from "../hooks/useWarmUpBrowser";
 
 const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
-   const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  useWarmUpBrowser();
+
+  // Initialize OAuth strategies for each provider
+  const googleOAuth = useOAuth({ strategy: "oauth_google" });
+  const facebookOAuth = useOAuth({ strategy: "oauth_facebook" });
+  const appleOAuth = useOAuth({ strategy: "oauth_apple" });
+
+  const handleOAuth = async (strategy) => {
+    // const redirectUrl = Linking.createURL("/(UnAuthorizedScreen)/Welcome", {
+    //   scheme: "authapp",
+    // });
+    try {
+      // const { createdSessionId, setActive } = await strategy.startOAuthFlow({
+      //   redirectUrl,
+      // });
+      const { createdSessionId, setActive } = await strategy.startOAuthFlow();
+
+      if (createdSessionId) {
+        setActive!({ session: createdSessionId });
+         router.push("/Welcome");
+      } else {
+        console.log("OAuth failed to create session");
+      }
+    } catch (err) {
+      console.error("OAuth error", err);
+    }
+  };
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -29,53 +60,42 @@ const LoginScreen: React.FC = () => {
     const body = {
       email,
       password,
-      role: "farmer",
-      device_token: "0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx",
-      type: "email",
-      social_id: "0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx",
     };
-      setLoading(true); 
+
+    setLoading(true);
 
     try {
       const response = await axios.post(
         "https://sowlab.com/assignment/user/login",
         body
       );
-      // Handle successful login, e.g. navigate to a different screen
       if (response.status === 200) {
-        dispatch(appActions.updateUsersDetails(response?.data));
+        dispatch(appActions.updateUsersDetails(response.data));
+        dispatch(appActions.updateLoginUsingEmailPass(true));
         router.push("/Welcome");
-        
         Alert.alert("Login Successful", "Welcome back!");
-          setLoading(false); 
-        // router.push("/NextScreen"); // Uncomment and replace with appropriate navigation
       }
     } catch (error) {
-      // Handle error response
       if (error.response) {
-        // Server responded with a status other than 2xx
         setErrorMessage(
           error.response.data.message || "Login failed. Please try again."
         );
       } else {
-        // No response was received
         setErrorMessage("Network error. Please try again.");
       }
-      setLoading(false); 
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <View className="flex-1 p-4 bg-white">
-      {/* Title */}
       <Text className="text-lg mb-20">FarmerEats</Text>
       <Text className="font-bold text-3xl mb-10">Welcome back!</Text>
       <Text className="text-sm text-gray-400 mb-14">
         New here?{" "}
         <Text
-          onPress={() => {
-            router.push("/SignupScreen");
-          }}
+          onPress={() => router.push("/SignupScreen")}
           className="text-[#e9663b]"
         >
           Create account
@@ -83,7 +103,6 @@ const LoginScreen: React.FC = () => {
       </Text>
 
       <View className="w-full space-y-4">
-        {/* Email Input Field */}
         <View className="flex-row items-center border bg-[#EEEDEC] border-[#EEEDEC] rounded-lg p-3">
           <Image source={require("../assets/attheratesmall.png")} />
           <TextInput
@@ -96,7 +115,6 @@ const LoginScreen: React.FC = () => {
           />
         </View>
 
-        {/* Password Input Field */}
         <View className="flex-row items-center border bg-[#EEEDEC] border-[#EEEDEC] rounded-lg p-3">
           <Image source={require("../assets/lock.png")} />
           <TextInput
@@ -106,26 +124,20 @@ const LoginScreen: React.FC = () => {
             className="flex-1 ml-2 border-0 bg-[#EEEDEC]"
             secureTextEntry
           />
-          <TouchableOpacity
-            onPress={() => {
-              router.push("/ForgotPassword");
-            }}
-          >
+          <TouchableOpacity onPress={() => router.push("/ForgotPassword")}>
             <Text className="text-[#e9663b] ml-2">Forgot Password?</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Error message display */}
         {errorMessage ? (
           <Text className="text-red-500 text-center mb-4">{errorMessage}</Text>
         ) : null}
       </View>
 
-      {/* Login Button */}
       <TouchableOpacity
         className="w-full bg-[#e9663b] rounded-full py-3 my-10 flex-row justify-center items-center"
         onPress={handleLogin}
-        disabled={loading} 
+        disabled={loading}
       >
         {loading ? (
           <ActivityIndicator size="small" color="#ffffff" className="mr-2" />
@@ -135,27 +147,51 @@ const LoginScreen: React.FC = () => {
           </Text>
         )}
       </TouchableOpacity>
+      {/* <TouchableOpacity
+        className="w-full bg-[#e9663b] rounded-full py-3 my-10 flex-row justify-center items-center"
+        onPress={() => router.push("/Welcome")}
+        disabled={loading}
+      >
+        <Text>Go to welcome screen</Text>
+      </TouchableOpacity> */}
 
-      {/* Alternate Login Options */}
       <Text className="text-gray-400 mb-10 text-center text-sm">
         Or login with
       </Text>
+
       <View className="w-full flex-row justify-between items-center">
-        <TouchableOpacity className="px-8 py-3 border border-gray-400 rounded-full">
+        <TouchableOpacity
+          onPress={() => handleOAuth(googleOAuth)}
+          className="px-8 py-3 border border-gray-400 rounded-full"
+        >
           <Image
             source={require("../assets/google.png")}
             className="w-6 h-6"
             resizeMode="contain"
           />
         </TouchableOpacity>
-        <TouchableOpacity className="px-8 py-3 border border-gray-400 rounded-full">
+        <TouchableOpacity
+          onPress={() =>
+            handleOAuth(
+              appleOAuth
+            )
+          }
+          className="px-8 py-3 border border-gray-400 rounded-full"
+        >
           <Image
             source={require("../assets/apple.png")}
             className="w-6 h-6"
             resizeMode="contain"
           />
         </TouchableOpacity>
-        <TouchableOpacity className="px-8 py-3 border border-gray-400 rounded-full">
+        <TouchableOpacity
+          onPress={() =>
+            handleOAuth(
+              facebookOAuth
+            )
+          }
+          className="px-8 py-3 border border-gray-400 rounded-full"
+        >
           <Image
             source={require("../assets/facebook.png")}
             className="w-6 h-6"
@@ -168,4 +204,3 @@ const LoginScreen: React.FC = () => {
 };
 
 export default LoginScreen;
-
