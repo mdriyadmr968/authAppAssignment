@@ -1,7 +1,7 @@
 workflows:
   build-app:
     name: Build Android and iOS
-    instance_type: mac_mini_m2  # Change this to mac_mini_m1 if needed
+    instance_type: mac_mini_m1
     environment:
       vars:
         NODE_VERSION: latest
