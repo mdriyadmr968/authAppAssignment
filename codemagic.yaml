@@ -37,7 +37,7 @@ workflows:
 
         script: |
 
-          eas build -p android --no-publish
+          eas build -p android
 
 
 
@@ -48,7 +48,7 @@ workflows:
 
         script: |
 
-          eas build -p ios --no-publish
+          eas build -p ios
 
 
 
