@@ -10,7 +10,7 @@ workflows:
 
       vars:
 
-        NODE_VERSION: latest
+        NODE_VERSION: 16  # Set to Node 16 to support legacy expo-cli
 
         EXPO_CLI_VERSION: latest
 
@@ -18,13 +18,13 @@ workflows:
 
     scripts:
 
-      # Install dependencies and the new local Expo CLI
+      # Install dependencies
 
       - name: Install dependencies
 
         script: |
 
-          npm install -g eas-cli
+          npm install -g expo-cli@$EXPO_CLI_VERSION
 
           npm install
 
@@ -37,7 +37,7 @@ workflows:
 
         script: |
 
-          eas build -p android
+          expo build:android --no-publish
 
 
 
@@ -48,7 +48,7 @@ workflows:
 
         script: |
 
-          eas build -p ios
+          expo build:ios --no-publish
 
 
 
