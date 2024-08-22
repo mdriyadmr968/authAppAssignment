@@ -1,29 +1,60 @@
 workflows:
+
   build-app:
+
     name: Build Android and iOS
+
     instance_type: mac_mini_m1
+
     environment:
+
       vars:
+
         NODE_VERSION: latest
+
         EXPO_CLI_VERSION: latest
+
       flutter: stable  # Include this if you're using Flutter as well; otherwise, it's optional
+
     scripts:
-      # Install dependencies
+
+      # Install dependencies and the new local Expo CLI
+
       - name: Install dependencies
+
         script: |
-          npm install -g expo-cli@$EXPO_CLI_VERSION
+
+          npm install -g eas-cli
+
           npm install
 
+
+
+
       # Build Android APK
+
       - name: Build Android
+
         script: |
-          expo build:android --no-publish 
+
+          eas build -p android --no-publish
+
+
+
 
       # Build iOS IPA
+
       - name: Build iOS
+
         script: |
-          expo build:ios --no-publish 
+
+          eas build -p ios --no-publish
+
+
+
 
     artifacts:
+
       - android/app/build/outputs/**/*.apk
+
       - ios/build/*.ipa  # Adjust based on your expo build output
